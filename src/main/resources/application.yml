@@ -1,0 +1,8 @@
+spring:
+    datasource:
+        url: jdbc:mysql://10.0.2.15:3306/moneybug
+        username: hum
+        password: 1234
+        driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+    port: 8081
