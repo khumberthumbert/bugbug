@@ -10,7 +10,10 @@ import lombok.Data;
 @Builder
 public class AccountDto {
 
-    private String username;
+    private int memNo;
+    private String id;
+    private String email;
+    private String name;
     private String password;
     private String roles;
 
