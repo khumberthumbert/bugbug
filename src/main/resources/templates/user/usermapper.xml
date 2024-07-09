@@ -3,11 +3,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.example.myapp.mapper.UserMapper">
+<mapper namespace="com.moneybug.bug.users.mapper.AccountMapper">
 
-    <insert id="insert" parameterType="com.example.myapp.domain.User" useGeneratedKeys="true" keyProperty="memNo">
+    <insert id="insert" parameterType="Account">
         INSERT INTO tb_member (name, password, roles) VALUES (#{name}, #{password}, #{roles})
     </insert>
+
 
 
 </mapper>
