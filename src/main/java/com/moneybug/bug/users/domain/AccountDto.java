@@ -11,7 +11,7 @@ import lombok.Data;
 public class AccountDto {
 
     private int memNo;
-    private String id;
+    private String username;
     private String email;
     private String name;
     private String password;
