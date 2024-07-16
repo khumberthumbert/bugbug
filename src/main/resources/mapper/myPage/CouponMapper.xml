@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="com.moneybug.bug.myPage.CouponMapper">
+  
+ <!-- 보유쿠폰조회 --> 
+ <select id="selectCouponList" resultType="CouponVO">
+ 	SELECT COUPON_NO, COUPON_CD, REG_DATE, CONTENT, IF(EXPIRE_DATE > NOW() , EXPIRE_DATE, '기한만료') AS EXPIRE_DATE, USE_YN
+	FROM TB_COUPON
+ 	WHERE MEM_NO = #{memNo}
+ 	<if test="expireYn != null and !expireYn.equals('')">
+		AND USE_YN = #{expireYn}
+ 	</if>
+ 	<if test="period = 'aDay' or period = 'aWeek'">
+ 		AND DATE_FORMAT(REG_DATE, '%Y-%m-%d') <![CDATA[>=]]> DATE_SUB(date_format(NOW(), '%Y%m%d'), INTERVAL ${periodNum} DAY)
+ 	</if>
+ 	<if test="period = 'aMonth' or period = 'threeMonth'">
+ 		AND DATE_FORMAT(REG_DATE, '%Y-%m-%d') <![CDATA[>=]]> DATE_SUB(date_format(NOW(), '%Y%m%d'), INTERVAL ${periodNum} MONTH)
+ 	</if>
+ 	ORDER BY REG_DATE DESC
+ </select>
+ 
+ <!-- 유저별 사용 가능한 쿠폰의 갯수 -->
+ <select id="selectCountAvailableCoupon" parameterType="int" resultType="int">
+ 	SELECT COUNT(*) AS COUPON_COUNT
+	FROM TB_COUPON
+	WHERE DATE_FORMAT(EXPIRE_DATE, '%Y%m%d') >= DATE_FORMAT(NOW(), '%Y%m%d')
+	AND USE_YN = true
+	AND MEM_NO = #{memNo}
+	GROUP BY MEM_NO
+ </select>
+ 
+ <!-- 쿠폰등록 -->
+ <insert id="insertCouponCode" parameterType="CouponVO">
+ 	INSERT INTO TB_COUPON (MEM_NO, COUPON_CD, CONTENT, REG_DATE, EXPIRE_DATE, USE_YN)
+ 	VALUES (#{memNo}, #{couponCd}, #{content}, now(), #{expireDate}, 'Y')
+ </insert>
+  
+ </mapper>
