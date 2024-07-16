@@ -1,7 +1,6 @@
 
 
 mybatis:
-    #config-location: classpath:mybatis-config.xml
     mapper-locations: classpath:mapper/*.xml
     configuration:
         map-underscore-to-camel-case: true
@@ -9,12 +8,15 @@ mybatis:
 
 spring:
     datasource:
-        url: jdbc:mysql://172.30.1.92:3306/moneybug
+        url: jdbc:mysql://192.168.219.104:3306/moneybug
         username: hum
         password: 1234
         driver-class-name: com.mysql.cj.jdbc.Driver
 server:
     port: 8082
 
-
+logging:
+    level:
+        com.moneybug.bug: DEBUG
+        org.mybatis: DEBUG
 

@@ -1,11 +1,13 @@
 package com.moneybug.bug.users.controller;
 
+import com.moneybug.bug.security.provider.FormAuthenticationProvider;
 import com.moneybug.bug.users.entity.Account;
 import com.moneybug.bug.users.service.AccountService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,7 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
+    private final FormAuthenticationProvider formAuthenticationProvider;
 
     @GetMapping("/")
     public String home(Model model) { //인증된 사용자의 정보를 보여줌
@@ -32,19 +35,25 @@ public class AccountController {
         return "home/home";
     }
 
-    /*@GetMapping("/userList")
-    public String getUserList(Model model) { // User 테이블의 전체 정보를 보여줌.
-        List<Account> accountList = accountService.getAccountList();
-        model.addAttribute("list", accountList);
-        return "accountListPage";
-    }*/
-
     @GetMapping("/login")
     public String loginPage() { //로그인 되지 않은 상태이면 로그인 페이지를, 로그인된 상태이면 home
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken)
             return "login/loginPage";
         return "redirect:/";
+    }
+
+    @PostMapping("/login")
+    public String login(String username, String password, Model model) {
+        try {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);
+            Authentication authentication = formAuthenticationProvider.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            return "redirect:/";
+        } catch (Exception e) {
+            model.addAttribute("error", "Invalid username or password.");
+            return "login/loginPage";
+        }
     }
 
     @GetMapping("/signup")
@@ -70,6 +79,7 @@ public class AccountController {
     }
 
     /* 회원 탈퇴*/
+    @PostMapping("/delete")
     public String withdraw(HttpSession session) {
         Long memNo = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (memNo != null) {
