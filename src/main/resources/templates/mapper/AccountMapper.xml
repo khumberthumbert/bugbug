@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.moneybug.bug.users.mapper.AccountMapper">
+
+    <!--<insert id="insertAccount" parameterType="com.moneybug.bug.users.entity.Account">
+        INSERT INTO tb_member (mem_no, name, username, password, email) VALUES (#{memNo}, #{name}, #{username}, #{password},#{email})
+    </insert>-->
+
+    <!--<delete id="deleteAccount" parameterType="Long">
+        DELETE
+        FROM tb_member
+        WHERE mem_no = #{memNo}
+    </delete>-->
+
+</mapper>

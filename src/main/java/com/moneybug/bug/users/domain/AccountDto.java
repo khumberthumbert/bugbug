@@ -10,8 +10,8 @@ import lombok.Data;
 @Builder
 public class AccountDto {
 
-    private int memNo;
-    private String id;
+    private Long memNo;
+    private String username;
     private String email;
     private String name;
     private String password;
