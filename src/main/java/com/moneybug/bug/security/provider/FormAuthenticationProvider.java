@@ -23,7 +23,6 @@ public class FormAuthenticationProvider implements AuthenticationProvider {
 
     private final AccountService accountService;
     private final PasswordEncoder passwordEncoder;
-    private final UserDetailsService userDetailsService;
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {

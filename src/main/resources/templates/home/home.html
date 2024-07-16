@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Home</title>
+</head>
+<body>
+<h2 th:text="${account.username} + '님의 회원 정보'"></h2>
+
+<p>name: <span th:text="${account.name}"></span></p>
+<p>username: <span th:text="${account.username}"></span></p>
+<p>email: <span th:text="${account.email}"></span></p>
+<p>password: <span th:text="${account.password}"></span></p>
+<p>address: <span th:text="${account.address}"></span></p>
+<p>phone: <span th:text="${account.phone}"></span></p>
+<p>website: <span th:text="${account.website}"></span></p>
+<p>company: <span th:text="${account.company}"></span></p>
+
+<button type="button" th:onclick="|location.href='@{/update}'|">수정하기</button>
+
+<form th:action="@{/logout}" method="post">
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+  <button type="submit">로그아웃</button>
+</form>
+
+<form th:action="@{/delete}" method="post">
+  <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+  <button type="submit">탈퇴하기</button>
+</form>
+</body>
+</html>

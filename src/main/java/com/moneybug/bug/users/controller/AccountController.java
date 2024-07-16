@@ -11,12 +11,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
-public class UserController {
+public class AccountController {
 
     private final AccountService accountService;
 
@@ -28,26 +29,34 @@ public class UserController {
         Account account = accountService.getAccountByMemNo(memNo);
         account.setPassword(null);//password는 보이지 않도록 null 설정
         model.addAttribute("user", account);
-        return "home";
+        return "home/home";
     }
 
-    @GetMapping("/userList")
+    /*@GetMapping("/userList")
     public String getUserList(Model model) { // User 테이블의 전체 정보를 보여줌.
         List<Account> accountList = accountService.getAccountList();
         model.addAttribute("list", accountList);
         return "accountListPage";
-    }
+    }*/
 
     @GetMapping("/login")
     public String loginPage() { //로그인 되지 않은 상태이면 로그인 페이지를, 로그인된 상태이면 home
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof AnonymousAuthenticationToken)
-            return "loginPage";
+            return "login/loginPage";
+        return "redirect:/";
+    }
+
+    @GetMapping("/signup")
+    public String signupPage() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof AnonymousAuthenticationToken)
+            return "login/signupPage";
         return "redirect:/";
     }
 
     /* 회원 가입 */
-    @GetMapping("/signup")
+    @PostMapping("/signup")
     public String signup(Account account) {
         try {
             accountService.signup(account);

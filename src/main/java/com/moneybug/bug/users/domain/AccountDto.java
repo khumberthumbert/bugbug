@@ -10,7 +10,7 @@ import lombok.Data;
 @Builder
 public class AccountDto {
 
-    private int memNo;
+    private Long memNo;
     private String username;
     private String email;
     private String name;
