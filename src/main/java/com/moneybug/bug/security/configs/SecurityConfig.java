@@ -34,11 +34,14 @@ public class SecurityConfig {
                         .loginProcessingUrl("/auth")
                         .usernameParameter("username")
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/")
+                        .defaultSuccessUrl("/", true)
+                        .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/"))
+                        .logoutSuccessUrl("/")
+                        .permitAll()
+                )
         ;
         return http.build();
     }

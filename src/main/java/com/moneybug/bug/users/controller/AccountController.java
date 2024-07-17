@@ -17,6 +17,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
+/**
+ * SecurityContextHolder : SecurityContext를 저장하는 기본 클래스
+ * getContext() : 현재 스레드에 대한 'SecurityContext'를 반환 -> 현재 인증된 사용자에 대한 정보를 포함
+ * getAuthentication() : securityContext에서 현재 사용자의 인증 정보를 반환한다. Authentication 객체는 현재 인증된 사용자에 대한 세부 정보를 포함
+ * getPrincipal() : Authentication 객체에서 인증된 사용자의 주체(principal)를 반환한다. 주체는 사용자에 대한 세부 정보를 나타내며, 이름, ID, 사용자 객체 자체가 될 수 있다.
+ */
+
 @Controller
 @RequiredArgsConstructor
 public class AccountController {
@@ -27,7 +34,8 @@ public class AccountController {
     @GetMapping("/")
     public String home(Model model) { //인증된 사용자의 정보를 보여줌
         //token에 저장되어 있는 인증된 사용자의 memNo값
-        Long memNo = (Long) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String principal = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long memNo = Long.parseLong(principal);
 
         Account account = accountService.getAccountByMemNo(memNo);
         account.setPassword(null);//password는 보이지 않도록 null 설정
@@ -43,7 +51,7 @@ public class AccountController {
         return "redirect:/";
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth")
     public String login(String username, String password, Model model) {
         try {
             UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username, password);

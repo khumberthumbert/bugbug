@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @Transactional : 메서드, 클래스 레벨에서 사용. 비 정상적인 예외 발생시 rollback.
+ */
+
 @Service
 @RequiredArgsConstructor
 public class AccountService {
