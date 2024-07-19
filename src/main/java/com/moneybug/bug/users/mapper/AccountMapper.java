@@ -14,25 +14,20 @@ import java.util.List;
 public interface AccountMapper {
 
     //회원 등록
-    @Insert("INSERT INTO tb_member (mem_no, name, username, password, email) VALUES (#{memNo}, #{name}, #{username}, #{password}, #{email})")
+    @Insert("INSERT INTO tb_member (mem_no, name, username, password, email, contact, roles) " +
+            "VALUES (#{memNo}, #{name}, #{username}, #{password}, #{email}, #{contact} ,#{roles})")
     @Options(useGeneratedKeys = true, keyProperty = "memNo")
-    public void insertAccount(Account account);
-
-    //회원 정보 가져오기 (이메일로 가져올지 username으로 가져올지 고민 중)
-    //Account getAccountByEmail(String email);
+    void accountSave(Account account);
 
     //회원 아이디 가져오기
-    @Select("SELECT * FROM tb_member WHERE username = #{username}")
-    Account getAccountUsername(String username);
-
-    //memNo 조회
-    @Select("SELECT * FROM tb_member WHERE mem_no = #{memNo}")
-    Account getAccountByMemNo(Long memNo);
+    @Select("SELECT COUNT(*) > 0 FROM tb_member WHERE username = #{username}")
+    boolean existByUsernames(String username);
 
     //회원 탈퇴
     @Delete("DELETE FROM tb_member WHERE mem_no = #{memNo}")
     void deleteAccount(Long memNo);
 
-    // Account 테이블 가져오기
-    List<Account> getAcoountList();
+    //회원 조회
+    Account findByUsername(String username);
+
 }
