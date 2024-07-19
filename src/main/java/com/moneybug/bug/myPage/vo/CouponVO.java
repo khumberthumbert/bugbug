@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class CouponVO {
-	// 테이블 컬럼
+	// 쿠폰 컬럼
 	private int couponNo;
 	private int memNo;
 	private String couponCd;
@@ -24,10 +24,11 @@ public class CouponVO {
 	@DateTimeFormat(pattern="yyyy-MM-dd") // @RequestParam, @ModelAttribute 사용 시 필요함 
 	@JsonFormat(pattern="yyyy-MM-dd") // @RequestBody, @ResponseBody 사용 시 필요함 
 	private Date regDate;
-	@DateTimeFormat(pattern="yyyy-MM-dd")
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private Date expireDate;
+	private String expireDate;
 	private boolean useYn;
+	
+	// 쿠폰 코드 컬럼
+	private int period;
 	
 	// 쿼리에서 필요한 추가 컬럼
 	private int couponCount;
