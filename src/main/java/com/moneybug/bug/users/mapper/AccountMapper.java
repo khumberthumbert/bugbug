@@ -28,6 +28,7 @@ public interface AccountMapper {
     void deleteAccount(Long memNo);
 
     //회원 조회
+    @Select("SELECT * FROM tb_member WHERE username = #{username}")
     Account findByUsername(String username);
 
 }
