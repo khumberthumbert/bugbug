@@ -3,7 +3,6 @@ package com.moneybug.bug.security.configs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
@@ -28,13 +28,17 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*", "/*/icon-*").permitAll()
                         .requestMatchers("/", "/join", "/joinProc", "/login").permitAll()
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
-                        .requestMatchers("/main/job").hasAnyRole("jobSeeker")
-                        .requestMatchers("/main/owner").hasAnyRole( "businessOwner")
+                        //.requestMatchers("/main/job").hasAnyRole("jobSeeker")
+                        //.requestMatchers("/main/owner").hasAnyRole( "businessOwner")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/loginProc")
+                        .failureHandler((request, response, exception) -> {
+                            System.out.println("exception: " + exception.getMessage());
+                            response.sendRedirect("/login");
+                        })
                         .defaultSuccessUrl("/")
                         .permitAll()
                 )
@@ -67,16 +71,13 @@ public class SecurityConfig {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-    @Bean
-    public InMemoryUserDetailsManager inMemoryUserDetailsManager(){
-        UserDetails user = User.withUsername("user")
-                .password("{noop}1111")
-                .authorities("ROLE_USER")
-                .build();
-        return new InMemoryUserDetailsManager(user);
-    }
+    /*@Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
 
-    @Bean
+        return new BCryptPasswordEncoder();
+    }*/
+
+    /*@Bean
     public UserDetailsService userDetailsService() {
 
         UserDetails user1 = User.builder()
@@ -97,8 +98,14 @@ public class SecurityConfig {
                 .roles("ADMIN")
                 .build();
 
-        return new InMemoryUserDetailsManager(user1, user2, admin);
-    }
+        UserDetails user3 = User.builder()
+                .username("user3")
+                .password("{noop}1234")  // 인코딩 없이 저장
+                .roles("businessOwner")
+                .build();
+
+        return new InMemoryUserDetailsManager(user1, user2, admin, user3);
+    }*/
 
     //권한 계층
     @Bean
