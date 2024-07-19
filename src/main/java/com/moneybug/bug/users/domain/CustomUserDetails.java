@@ -1,32 +1,45 @@
-package com.moneybug.bug.security.provider;
+package com.moneybug.bug.users.domain;
 
-import com.moneybug.bug.users.domain.AccountDto;
-import lombok.Data;
+import com.moneybug.bug.users.entity.Account;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-@Data
-public class AccountContext implements UserDetails {
-    private AccountDto accountDto;
+public class CustomUserDetails implements UserDetails {
 
-    public AccountContext(AccountDto accountDto, Object p1) {
+    private Account account;
+
+    public CustomUserDetails(Account account) {
+
+        this.account = account;
     }
 
+    //권한에 대해서 리턴.
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+
+        Collection<GrantedAuthority> collection = new ArrayList<>();
+
+        collection.add(new GrantedAuthority() {
+            @Override
+            public String getAuthority() {
+                return account.getRoles();
+            }
+        });
+
+        return collection;
     }
 
     @Override
     public String getPassword() {
-        return accountDto.getPassword();
+        return account.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return accountDto.getUsername();
+        return account.getUsername();
     }
 
     @Override
