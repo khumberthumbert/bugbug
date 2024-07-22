@@ -5,7 +5,7 @@
 
 <mapper namespace="com.moneybug.bug.users.mapper.AccountMapper">
 
-    <!--<insert id="insertAccount" parameterType="com.moneybug.bug.users.entity.Account">
+    <!--<insert id="insertAccount" parameterType="com.moneybug.bug.users.vo.AccountVO">
         INSERT INTO tb_member (mem_no, name, username, password, email) VALUES (#{memNo}, #{name}, #{username}, #{password},#{email})
     </insert>-->
 

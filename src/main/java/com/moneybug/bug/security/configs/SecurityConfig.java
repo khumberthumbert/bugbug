@@ -1,46 +1,59 @@
 package com.moneybug.bug.security.configs;
 
+import com.moneybug.bug.users.dto.CustomUserDetails;
+import com.moneybug.bug.users.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+
+import javax.sql.DataSource;
 
 @EnableWebSecurity
 @Configuration
 @RequiredArgsConstructor
+@Log4j2
 public class SecurityConfig {
+
+    private final DataSource dataSource;
+    private final CustomUserDetailsService customUserDetailsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*", "/*/icon-*").permitAll()
-                        .requestMatchers("/", "/join", "/joinProc", "/login").permitAll()
+                        .requestMatchers( "/join", "/joinProc", "/login").permitAll()
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
-                        //.requestMatchers("/main/job").hasAnyRole("jobSeeker")
-                        //.requestMatchers("/main/owner").hasAnyRole( "businessOwner")
+                        .requestMatchers("/main/job").hasAnyRole("jobSeeker")
+                        .requestMatchers("/main/owner").hasAnyRole("businessOwner")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/loginProc")
                         .failureHandler((request, response, exception) -> {
-                            System.out.println("exception: " + exception.getMessage());
+                            log.info("exception : {}", exception.getMessage());
                             response.sendRedirect("/login");
                         })
                         .defaultSuccessUrl("/")
                         .permitAll()
+                )
+                .rememberMe(rememberMe -> rememberMe
+                .key("rememberMe")
+                .tokenValiditySeconds(86400)
+                .tokenRepository(persistentTokenRepository())
+                .userDetailsService(customUserDetailsService)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -67,45 +80,16 @@ public class SecurityConfig {
     }
 
     @Bean
+    public PersistentTokenRepository persistentTokenRepository() {
+        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
+        tokenRepository.setDataSource(dataSource);
+        return tokenRepository;
+    }
+
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
-
-    /*@Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-
-        return new BCryptPasswordEncoder();
-    }*/
-
-    /*@Bean
-    public UserDetailsService userDetailsService() {
-
-        UserDetails user1 = User.builder()
-                .username("user1")
-                .password(passwordEncoder().encode("1234"))
-                .roles("jobSeeker")
-                .build();
-
-        UserDetails user2 = User.builder()
-                .username("user2")
-                .password(passwordEncoder().encode("1234"))
-                .roles("businessOwner")
-                .build();
-
-        UserDetails admin = User.builder()
-                .username("ADMIN")
-                .password("1234")
-                .roles("ADMIN")
-                .build();
-
-        UserDetails user3 = User.builder()
-                .username("user3")
-                .password("{noop}1234")  // 인코딩 없이 저장
-                .roles("businessOwner")
-                .build();
-
-        return new InMemoryUserDetailsManager(user1, user2, admin, user3);
-    }*/
 
     //권한 계층
     @Bean

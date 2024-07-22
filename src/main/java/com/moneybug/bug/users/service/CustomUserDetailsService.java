@@ -1,7 +1,7 @@
 package com.moneybug.bug.users.service;
 
-import com.moneybug.bug.users.domain.CustomUserDetails;
-import com.moneybug.bug.users.entity.Account;
+import com.moneybug.bug.users.dto.CustomUserDetails;
+import com.moneybug.bug.users.vo.AccountVO;
 import com.moneybug.bug.users.mapper.AccountMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -20,11 +20,11 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Account accountData = accountMapper.findByUsername(username);
-        if (accountData != null) {
-
-            return new CustomUserDetails(accountData);
+        AccountVO accountVOData = accountMapper.findByUsername(username);
+        if (accountVOData != null) {
+            return new CustomUserDetails(accountVOData);
+        } else {
+            throw new UsernameNotFoundException("User not found");
         }
-        return null;
     }
 }

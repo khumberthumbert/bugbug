@@ -1,20 +1,17 @@
-package com.moneybug.bug.users.domain;
+package com.moneybug.bug.users.dto;
 
-import com.moneybug.bug.users.entity.Account;
+import com.moneybug.bug.users.vo.AccountVO;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
+@RequiredArgsConstructor
 public class CustomUserDetails implements UserDetails {
 
-    private Account account;
-
-    public CustomUserDetails(Account account) {
-
-        this.account = account;
-    }
+    private final AccountVO accountVO;
 
     //권한에 대해서 리턴.
     @Override
@@ -25,7 +22,7 @@ public class CustomUserDetails implements UserDetails {
         collection.add(new GrantedAuthority() {
             @Override
             public String getAuthority() {
-                return account.getRoles();
+                return accountVO.getRoles();
             }
         });
 
@@ -34,12 +31,12 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return account.getPassword();
+        return accountVO.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return account.getUsername();
+        return accountVO.getUsername();
     }
 
     @Override

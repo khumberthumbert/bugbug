@@ -1,6 +1,5 @@
-package com.moneybug.bug.users.entity;
+package com.moneybug.bug.users.vo;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,7 +9,7 @@ import java.util.Collection;
 
 @Getter
 @Setter
-public class Account implements UserDetails {
+public class AccountVO implements UserDetails {
 
     private Long memNo;
     private String username;

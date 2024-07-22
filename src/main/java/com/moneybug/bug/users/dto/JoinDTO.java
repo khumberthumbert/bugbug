@@ -1,4 +1,4 @@
-package com.moneybug.bug.users.domain;
+package com.moneybug.bug.users.dto;
 
 import lombok.*;
 import org.springframework.lang.NonNull;
@@ -8,7 +8,7 @@ import org.springframework.lang.NonNull;
  */
 @Getter
 @Setter
-public class JoinDto {
+public class JoinDTO {
 
     private Long memNo;
 

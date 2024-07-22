@@ -1,6 +1,6 @@
 package com.moneybug.bug.users.controller;
 
-import com.moneybug.bug.users.domain.JoinDto;
+import com.moneybug.bug.users.dto.JoinDTO;
 import com.moneybug.bug.users.service.JoinService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -21,7 +21,7 @@ public class JoinController {
     }
 
     @PostMapping("/joinProc")
-    public String signupProcess(JoinDto joinDto) {
+    public String signupProcess(JoinDTO joinDto) {
         System.out.println(joinDto.getUsername());
         log.info("{}", joinDto.getUsername());
 

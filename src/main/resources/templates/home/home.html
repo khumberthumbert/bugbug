@@ -5,16 +5,16 @@
   <title>Home</title>
 </head>
 <body>
-<h2 th:text="${account.username} + '님의 회원 정보'"></h2>
+<h2 th:text="${accountVO.username} + '님의 회원 정보'"></h2>
 
-<p>name: <span th:text="${account.name}"></span></p>
-<p>username: <span th:text="${account.username}"></span></p>
-<p>email: <span th:text="${account.email}"></span></p>
-<p>password: <span th:text="${account.password}"></span></p>
-<p>address: <span th:text="${account.address}"></span></p>
-<p>phone: <span th:text="${account.phone}"></span></p>
-<p>website: <span th:text="${account.website}"></span></p>
-<p>company: <span th:text="${account.company}"></span></p>
+<p>name: <span th:text="${accountVO.name}"></span></p>
+<p>username: <span th:text="${accountVO.username}"></span></p>
+<p>email: <span th:text="${accountVO.email}"></span></p>
+<p>password: <span th:text="${accountVO.password}"></span></p>
+<p>address: <span th:text="${accountVO.address}"></span></p>
+<p>phone: <span th:text="${accountVO.phone}"></span></p>
+<p>website: <span th:text="${accountVO.website}"></span></p>
+<p>company: <span th:text="${accountVO.company}"></span></p>
 
 <button type="button" th:onclick="|location.href='@{/update}'|">수정하기</button>
 
