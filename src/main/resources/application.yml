@@ -1,14 +1,30 @@
+
+
+mybatis:
+    mapper-locations: classpath:mapper/*.xml
+    configuration:
+        map-underscore-to-camel-case: true
+
+
 spring:
     datasource:
-        url: jdbc:mysql://localhost:3306/moneybug
-        username: root
-        password: hyson
+        url: jdbc:mysql://192.168.219.101:3306/moneybug
+        username: hum
+        password: 1234
         driver-class-name: com.mysql.cj.jdbc.Driver
-server:
-    port: 8081
+    mustache:
+      servlet:
+          expose-request-attributes: true
 
-mybatis: 
-    mapper-locations: classpath:mapper/**/*.xml 
-    configuration:
-      map-underscore-to-camel-case: true
-    type-aliases-package: com.moneybug.bug.**.vo
+#session 소멸 시간 설정.
+server:
+    port: 8082
+    servlet:
+        session:
+            timeout: 90m
+
+
+logging:
+    level:
+        com.moneybug.bug: DEBUG
+        org.mybatis: DEBUG
