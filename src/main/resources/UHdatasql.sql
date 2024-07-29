@@ -104,3 +104,34 @@ ALTER TABLE tb_wanted
         FOREIGN KEY (mem_no) REFERENCES tb_member(mem_no);
 
 
+
+
+show columns from tb_member;
+show columns from tb_persistent_logins;
+
+ALTER TABLE tb_member MODIFY COLUMN email_valid VARCHAR(255) NULL;
+ALTER TABLE tb_member CHANGE COLUMN id username VARCHAR(30);
+ALTER TABLE tb_member DROP COLUMN auth;
+
+commit;
+
+select *
+from tb_member;
+
+delete from tb_member;
+
+ALTER TABLE tb_member
+    ADD CONSTRAINT uc_username UNIQUE (username);
+
+ALTER TABLE tb_member
+    MODIFY username VARCHAR(64) NOT NULL;
+
+CREATE TABLE tb_persistent_logins (
+                                      username VARCHAR(64) NOT NULL,
+                                      series VARCHAR(64) PRIMARY KEY,
+                                      token VARCHAR(64) NOT NULL,
+                                      last_used TIMESTAMP NOT NULL,
+                                      FOREIGN KEY (username) REFERENCES tb_member(username)
+);
+
+select * from tb_persistent_logins;
