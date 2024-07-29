@@ -28,4 +28,3 @@ logging:
     level:
         com.moneybug.bug: DEBUG
         org.mybatis: DEBUG
-
