@@ -2,6 +2,7 @@ package com.moneybug.bug.security.configs;
 
 import com.moneybug.bug.users.dto.CustomUserDetails;
 import com.moneybug.bug.users.service.CustomUserDetailsService;
+import com.moneybug.bug.users.service.TokenRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
@@ -25,8 +26,8 @@ import javax.sql.DataSource;
 @Log4j2
 public class SecurityConfig {
 
-    private final DataSource dataSource;
     private final CustomUserDetailsService customUserDetailsService;
+    private final TokenRepositoryImpl tokenRepositoryImpl;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -52,7 +53,7 @@ public class SecurityConfig {
                 .rememberMe(rememberMe -> rememberMe
                 .key("rememberMe")
                 .tokenValiditySeconds(86400)
-                .tokenRepository(persistentTokenRepository())
+                .tokenRepository(tokenRepositoryImpl)
                 .userDetailsService(customUserDetailsService)
                 )
                 .logout(logout -> logout
@@ -77,13 +78,6 @@ public class SecurityConfig {
                         .sessionFixation().changeSessionId())
         ;
         return http.build();
-    }
-
-    @Bean
-    public PersistentTokenRepository persistentTokenRepository() {
-        JdbcTokenRepositoryImpl tokenRepository = new JdbcTokenRepositoryImpl();
-        tokenRepository.setDataSource(dataSource);
-        return tokenRepository;
     }
 
     @Bean

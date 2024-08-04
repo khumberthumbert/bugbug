@@ -17,6 +17,25 @@ spring:
       servlet:
           expose-request-attributes: true
 
+    mail:
+      host: smtp.gmail.com
+      port: 587
+      username: dnrgks142@gmail.com
+      password: owwibixtmpwevrwh
+      properties:
+          mail:
+              smtp:
+                  auth: true
+                  timeout: 5000
+                  connection-timeout: 5000
+                  write timeout: 5000
+                  starttls:
+                      enable: true
+                      required: true
+
+auth:
+  code-expiration-millis: 1800000  # 30 * 60 * 1000 == 30분
+
 #session 소멸 시간 설정.
 server:
     port: 8082
@@ -29,4 +48,5 @@ logging:
     level:
         com.moneybug.bug: DEBUG
         org.mybatis: DEBUG
+
 
