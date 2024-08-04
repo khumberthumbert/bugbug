@@ -49,4 +49,3 @@ logging:
         com.moneybug.bug: DEBUG
         org.mybatis: DEBUG
 
-
