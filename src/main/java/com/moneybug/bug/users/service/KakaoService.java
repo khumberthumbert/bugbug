@@ -41,7 +41,6 @@ public class KakaoService {
                         .build(true))
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
-                //TODO : Custom Exception
                 .onStatus(status -> status.is4xxClientError(), clientResponse ->
                         Mono.error(new RuntimeException("Invalid Parameter")))
                 .onStatus(status -> status.is5xxServerError(), clientResponse ->
@@ -70,7 +69,6 @@ public class KakaoService {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken) // access token 인가
                 .header(HttpHeaders.CONTENT_TYPE, HttpHeaderValues.APPLICATION_X_WWW_FORM_URLENCODED.toString())
                 .retrieve()
-                //TODO : Custom Exception
                 .onStatus(status -> status.is4xxClientError(), clientResponse ->
                         Mono.error(new RuntimeException("Invalid Parameter")))
                 .onStatus(status -> status.is5xxServerError(), clientResponse ->
