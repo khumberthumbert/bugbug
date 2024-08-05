@@ -15,7 +15,7 @@
         WHERE mem_no = #{memNo}
     </delete>-->
 
-    <select id="findAccounts" parameterType="Account" resultType="Account">
+    <!--<select id="findAccounts" parameterType="Account" resultType="Account">
         SELECT *
         FROM tb_member
         WHERE 1=1
@@ -31,6 +31,6 @@
         <if test="phoneNumber != null">
             AND contact = #{contact}
         </if>
-    </select>
+    </select>-->
 
 </mapper>

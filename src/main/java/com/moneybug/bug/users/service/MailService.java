@@ -11,7 +11,7 @@ import jakarta.mail.internet.MimeMessage;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
-    private static final String senderEmail= "wisejohn950330@gmail.com";
+    private static final String senderEmail= "dnrgks142@gmail.com";
     private static int number;
 
     public static void createNumber(){

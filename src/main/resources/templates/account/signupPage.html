@@ -19,7 +19,7 @@
     </div>
     <div>
         <input type="text" name="email" placeholder="*Email을 입력하세요" id="email"/>
-        <button type="button" onclick="sendNumber()">이메일 인증</button>
+        <button type="button" onclick="sendNumber(event)">이메일 인증</button>
     </div>
     <div id="mail_number" style="display: none">
         <input type="text" name="number" id="number" style="width:250px; margin-top: -10px" placeholder="인증번호 입력">
@@ -41,15 +41,14 @@
 </form>
 </body>
 <script>
-    function sendNumber() {
+    function sendNumber(event) {
+        event.preventDefault(); // 폼 제출 막기
         var email = document.getElementsByName('email')[0].value;
         if (email) {
-            console.log(email)
             fetch('/mail', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Access-Control-Allow-Origin': 'http://The web site allowed to access'
                 },
                 body: JSON.stringify({ mail: email })
             })
@@ -60,15 +59,19 @@
                     return response.json();
                 })
                 .then(data => {
+                    console.log(data)
+
                     if (data.success) {
                         alert("인증번호 발송");
                         document.getElementById("Confirm").value = data.number;
                         document.getElementById("mail_number").style.display = "block";
                     } else {
-                        alert('인증번호 발송에 실패했습니다: ' + data.error);
+                        console.log(data)
+                        alert('인증번호 발송에 실패했습니다:1 ' + data.error);
                     }
                 })
                 .catch(error => {
+                        console.log(error);
                         console.error('Error:', error.message);
                         console.error('Stack Trace:', error.stack);
                         alert('인증번호 발송에 실패했습니다.');
