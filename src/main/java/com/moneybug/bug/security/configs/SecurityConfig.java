@@ -2,6 +2,7 @@ package com.moneybug.bug.security.configs;
 
 import com.moneybug.bug.users.dto.CustomUserDetails;
 import com.moneybug.bug.users.service.CustomUserDetailsService;
+import com.moneybug.bug.users.service.KakaoOAuth2UserService;
 import com.moneybug.bug.users.service.TokenRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -14,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -29,6 +31,8 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final TokenRepositoryImpl tokenRepositoryImpl;
+    private final KakaoOAuth2UserService kakaoOAuth2UserService;
+    private final ClientRegistrationRepository clientRegistrationRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,7 +48,6 @@ public class SecurityConfig {
                         .requestMatchers("/main/job").hasAnyRole("jobSeeker")
                         .requestMatchers("/main/owner").hasAnyRole("businessOwner")
                         .anyRequest().authenticated()
-
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
@@ -57,15 +60,25 @@ public class SecurityConfig {
                         .permitAll()
                 )
                 .rememberMe(rememberMe -> rememberMe
-                .key("rememberMe")
-                .tokenValiditySeconds(86400)
-                .tokenRepository(tokenRepositoryImpl)
-                .userDetailsService(customUserDetailsService)
+                    .key("rememberMe")
+                    .tokenValiditySeconds(86400)
+                    .tokenRepository(tokenRepositoryImpl)
+                    .userDetailsService(customUserDetailsService)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")
                         .permitAll()
+                )
+                .oauth2Login(oauth2 -> oauth2
+                        .loginPage("/login")
+                        .defaultSuccessUrl("/home", true)
+                        .clientRegistrationRepository(clientRegistrationRepository)
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(kakaoOAuth2UserService))
+                        .successHandler((request, response, authentication) -> {
+                            response.sendRedirect("/callback?code=" + request.getParameter("code"));
+                        })
                 )
                 /*
                  * sessionManagement() 메소드를 통한 설정을 진행한다.
@@ -99,7 +112,6 @@ public class SecurityConfig {
 
         hierarchy.setHierarchy("ROLE_ADMIN > ROLE_businessOwner\n" +
                 "ROLE_ADMIN > ROLE_jobSeeker");
-
         return hierarchy;
     }
 }

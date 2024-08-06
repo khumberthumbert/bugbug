@@ -53,3 +53,21 @@ logging:
 kakao:
   client_id: 0abfcc31ba59af235b369ff0a1af6bd6
   redirect_uri: http://localhost:8082
+
+security:
+  oauth2:
+    client:
+      registration:
+        kakao:
+          client-id: ${kakao.client_id}
+          client-secret: "" # 카카오는 클라이언트 비밀을 사용하지 않음
+          redirect-uri: ${kakao.redirect_uri}/login/oauth2/code/kakao
+          authorization-grant-type: authorization_code
+          scope: profile
+          client-name: Kakao
+      provider:
+        kakao:
+          authorization-uri: https://kauth.kakao.com/oauth/authorize
+          token-uri: https://kauth.kakao.com/oauth/token
+          user-info-uri: https://kapi.kakao.com/v2/user/me
+          user-name-attribute: id

@@ -6,6 +6,9 @@
 <body>
 <h1>Welcome!</h1>
 <p>Home page content goes here.</p>
+<h1>Welcome, <span th:text="${id}">User</span>!</h1>
+<h2>Your role: <span th:text="${role}">Role</span></h2>
 <a th:href="@{/logout}">Logout</a>
+
 </body>
 </html>
