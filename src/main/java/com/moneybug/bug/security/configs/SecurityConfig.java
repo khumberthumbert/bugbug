@@ -1,8 +1,9 @@
 package com.moneybug.bug.security.configs;
 
 import com.moneybug.bug.users.dto.CustomUserDetails;
+import com.moneybug.bug.users.service.CustomOAuth2UserService;
 import com.moneybug.bug.users.service.CustomUserDetailsService;
-import com.moneybug.bug.users.service.KakaoOAuth2UserService;
+//import com.moneybug.bug.users.service.KakaoOAuth2UserService;
 import com.moneybug.bug.users.service.TokenRepositoryImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,19 +32,18 @@ public class SecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
     private final TokenRepositoryImpl tokenRepositoryImpl;
-    private final KakaoOAuth2UserService kakaoOAuth2UserService;
-    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/mail") // CSRF 보호에서 제외할 URL
+                        .ignoringRequestMatchers("/mail", "/login/oauth2/**") // CSRF 보호에서 제외할 URL
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*", "/*/icon-*", "/mail").permitAll()
-                        .requestMatchers( "/join", "/joinProc", "/login").permitAll()
+                        .requestMatchers( "/join", "/joinProc", "/login","/oauth2/**", "/login/**", "/login/oauth2/**").permitAll()
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
                         .requestMatchers("/main/job").hasAnyRole("jobSeeker")
                         .requestMatchers("/main/owner").hasAnyRole("businessOwner")
@@ -70,16 +70,10 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/")
                         .permitAll()
                 )
-                .oauth2Login(oauth2 -> oauth2
+                .oauth2Login((oauth2) -> oauth2
                         .loginPage("/login")
-                        .defaultSuccessUrl("/home", true)
-                        .clientRegistrationRepository(clientRegistrationRepository)
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(kakaoOAuth2UserService))
-                        .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("/callback?code=" + request.getParameter("code"));
-                        })
-                )
+                        .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
+                                .userService(customOAuth2UserService)))
                 /*
                  * sessionManagement() 메소드를 통한 설정을 진행한다.
                  * maximumSession(정수) : 하나의 아이디에 대한 다중 로그인 허용 개수

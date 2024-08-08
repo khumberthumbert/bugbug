@@ -12,8 +12,8 @@ import org.apache.ibatis.annotations.*;
 public interface AccountMapper {
 
     //회원 등록
-    @Insert("INSERT INTO tb_member (mem_no, name, username, password, email, contact, roles) " +
-            "VALUES (#{memNo}, #{name}, #{username}, #{password}, #{email}, #{contact} ,#{roles})")
+    @Insert("INSERT INTO tb_member (name, username, password, email, contact, roles) " +
+            "VALUES (#{name}, #{username}, #{password}, #{email}, #{contact} ,#{roles})")
     @Options(useGeneratedKeys = true, keyProperty = "memNo")
     void accountSave(AccountVO accountVO);
 
