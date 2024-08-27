@@ -17,6 +17,11 @@ public interface AccountMapper {
     @Options(useGeneratedKeys = true, keyProperty = "memNo")
     void accountSave(AccountVO accountVO);
 
+    //회원 업데이트
+    @Update("UPDATE tb_member SET email=#{email}, roles=#{roles} WHERE mem_no=#{memNo}")
+    void updateAccount(AccountVO accountVO);
+
+
     //회원 아이디 가져오기
     @Select("SELECT COUNT(*) > 0 FROM tb_member WHERE username = #{username}")
     boolean existByUsernames(String username);

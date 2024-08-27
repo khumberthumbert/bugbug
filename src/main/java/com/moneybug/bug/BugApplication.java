@@ -9,7 +9,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BugApplication {
 
 	public static void main(String[] args) {
+
+
 		SpringApplication.run(BugApplication.class, args);
 	}
+
 
 }

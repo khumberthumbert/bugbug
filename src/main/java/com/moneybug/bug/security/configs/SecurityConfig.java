@@ -18,6 +18,7 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -39,11 +40,11 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/mail", "/login/oauth2/**") // CSRF 보호에서 제외할 URL
+                        .ignoringRequestMatchers("/mail", "/login/oauth2/**", "/login/oauth2/**/**") // CSRF 보호에서 제외할 URL
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*", "/*/icon-*", "/mail").permitAll()
-                        .requestMatchers( "/join", "/joinProc", "/login","/oauth2/**", "/login/**", "/login/oauth2/**").permitAll()
+                        .requestMatchers( "/join", "/joinProc", "/login","/oauth2/**", "/login/**", "/login/oauth2/**","/login/oauth2/**/**").permitAll()
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
                         .requestMatchers("/main/job").hasAnyRole("jobSeeker")
                         .requestMatchers("/main/owner").hasAnyRole("businessOwner")
@@ -74,6 +75,9 @@ public class SecurityConfig {
                         .loginPage("/login")
                         .userInfoEndpoint(userInfoEndpointConfig -> userInfoEndpointConfig
                                 .userService(customOAuth2UserService)))
+                .exceptionHandling(exceptionHandling -> exceptionHandling
+                        .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+                )
                 /*
                  * sessionManagement() 메소드를 통한 설정을 진행한다.
                  * maximumSession(정수) : 하나의 아이디에 대한 다중 로그인 허용 개수
@@ -89,6 +93,7 @@ public class SecurityConfig {
                  */
                 .sessionManagement((session) -> session
                         .sessionFixation().changeSessionId())
+
         ;
         return http.build();
     }
