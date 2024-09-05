@@ -2,10 +2,16 @@ spring:
   profiles:
     include: oauth
   datasource:
-    url: jdbc:mysql://192.168.219.102:3306/moneybug
+    url: jdbc:mysql://192.168.219.104:3306/moneybug
     username: hum
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 1000  # 최대 풀 크기
+      minimum-idle: 1000  # 최소 유효 커넥션 수
+      idle-timeout: 600000  # 유휴 커넥션 유지 시간 (기본값: 600000 ms, 10분)
+      connection-timeout: 30000  # 커넥션 요청 대기 시간 (기본값: 30000 ms, 30초)
+      max-lifetime: 1800000  # 커넥션의 최대 수명 (기본값: 1800000 ms, 30분)
   mustache:
     servlet:
       expose-request-attributes: true

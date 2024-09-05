@@ -14,10 +14,12 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandlerImpl;
 import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
@@ -38,16 +40,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf
+                .csrf(AbstractHttpConfigurer::disable)
+                /*.csrf(csrf -> csrf
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                        .ignoringRequestMatchers("/mail", "/login/oauth2/**", "/login/oauth2/**/**") // CSRF 보호에서 제외할 URL
-                )
+                        .ignoringRequestMatchers("/mail", "/login/oauth2/**") // CSRF 보호에서 제외할 URL
+                )*/
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/images/**", "/js/**", "/favicon.*", "/*/icon-*", "/mail").permitAll()
-                        .requestMatchers( "/join", "/joinProc", "/login","/oauth2/**", "/login/**", "/login/oauth2/**","/login/oauth2/**/**").permitAll()
+                        .requestMatchers( "/join", "/joinProc", "/login","/oauth2/**", "/login/**", "/login/oauth2/**").permitAll()
                         .requestMatchers("/admin").hasAnyRole("ADMIN")
-                        .requestMatchers("/main/job").hasAnyRole("jobSeeker")
-                        .requestMatchers("/main/owner").hasAnyRole("businessOwner")
+                        .requestMatchers("/main/user").hasAnyRole("USER")
+                        .requestMatchers("/main/manager").hasAnyRole("MANAGER")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
@@ -93,6 +96,9 @@ public class SecurityConfig {
                  */
                 .sessionManagement((session) -> session
                         .sessionFixation().changeSessionId())
+                .exceptionHandling(exception ->
+                        exception.accessDeniedHandler(new AccessDeniedHandlerImpl())
+                )
 
         ;
         return http.build();
@@ -109,8 +115,8 @@ public class SecurityConfig {
 
         RoleHierarchyImpl hierarchy = new RoleHierarchyImpl();
 
-        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_businessOwner\n" +
-                "ROLE_ADMIN > ROLE_jobSeeker");
+        hierarchy.setHierarchy("ROLE_ADMIN > ROLE_MANAGER\n" +
+                "ROLE_MANAGER > ROLE_USER");
         return hierarchy;
     }
 }

@@ -42,9 +42,6 @@ public class OAuth2ClientConfig {
     @Value("${KAKAO_CLIENT_ID}")
     private String kakaoClientId;
 
-
-
-
     @Bean
     public ClientRegistrationRepository clientRegistrationRepository() {
         return new InMemoryClientRegistrationRepository(this.googleClientRegistration(),
@@ -85,8 +82,7 @@ public class OAuth2ClientConfig {
 
     private ClientRegistration kakaoClientRegistration() {
         return ClientRegistration.withRegistrationId("kakao")
-                .clientId("0abfcc31ba59af235b369ff0a1af6bd6")
-                //.clientSecret("ARx7tqnIiCWr0R3z4I8JdtMi2lrqud5d")
+                .clientId(kakaoClientId)
                 .scope("profile_nickname", "profile_image", "account_email")
                 .authorizationUri("https://kauth.kakao.com/oauth/authorize")
                 .tokenUri("https://kauth.kakao.com/oauth/token")
@@ -96,19 +92,5 @@ public class OAuth2ClientConfig {
                 .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
                 .build();
-    }
-    @Bean
-    public RestTemplate restTemplate() {
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.setErrorHandler(new DefaultResponseErrorHandler() {
-            @Override
-            public void handleError(ClientHttpResponse response) throws IOException {
-                String body = StreamUtils.copyToString(response.getBody(), Charset.defaultCharset());
-                log.debug("Response body : {}", body);
-                log.error("Response body : {}", body);
-                super.handleError(response);
-            }
-        });
-        return restTemplate;
     }
 }
