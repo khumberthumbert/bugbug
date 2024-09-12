@@ -87,7 +87,7 @@ public class OAuth2ClientConfig {
                 .authorizationUri("https://kauth.kakao.com/oauth/authorize")
                 .tokenUri("https://kauth.kakao.com/oauth/token")
                 .userInfoUri("https://kapi.kakao.com/v2/user/me")
-                .userNameAttributeName("id") // "id"로 변경
+                .userNameAttributeName("id")
                 .clientName("Kakao")
                 .redirectUri("{baseUrl}/login/oauth2/code/{registrationId}")
                 .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)

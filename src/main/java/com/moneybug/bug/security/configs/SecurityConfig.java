@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
@@ -81,19 +82,9 @@ public class SecurityConfig {
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
                 )
-                /*
-                 * sessionManagement() 메소드를 통한 설정을 진행한다.
-                 * maximumSession(정수) : 하나의 아이디에 대한 다중 로그인 허용 개수
-                 * maxSessionPreventsLogin(boolean) : 다중 로그인 개수를 초과 하였을 경우 처리 방법
-                      true : 초과시 새로운 로그인 차단
-                      false : 초과시 기존 세션 하나 삭제
-                 */
                 .sessionManagement((auth) -> auth
                         .maximumSessions(1)
                         .maxSessionsPreventsLogin(true))
-                /*
-                Session Fixation Attack 방지
-                 */
                 .sessionManagement((session) -> session
                         .sessionFixation().changeSessionId())
                 .exceptionHandling(exception ->
@@ -106,7 +97,7 @@ public class SecurityConfig {
 
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        return new BCryptPasswordEncoder(8);
     }
 
     //권한 계층
